@@ -19,6 +19,7 @@ import {
 import Link from "next/link";
 import { formSchema } from "@/schemas/formSchema";
 import { useAuthAdmin } from "@/hooks/useAuthAdmin"; 
+import Image from "next/image";
 
 export function FormAuthAdmin({
   className,
@@ -40,8 +41,8 @@ export function FormAuthAdmin({
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
-      <div className="flex flex-col items-center gap-2 text-center">
-        {/* Espacio para logo o título si es necesario */}
+      <div className="pb-18 flex flex-col items-center gap-2 text-center">
+        <Image src="/logoSJD.png" alt="logo" width={100} height={100} />
       </div>
       
       <Form {...form}>
