@@ -32,20 +32,18 @@ export default function AdminLayout({
               </Link>
               
               <div className="flex items-center space-x-2">
-                {/* Agregar jugador - Mobile */}
-                <Button variant="outline" size="icon">
-                  <UserPlus className="w-4 h-4" />
-                </Button>
                 
-                {/* Agregar bot - Mobile */}
-                <Button variant="outline" size="icon">
-                  <Bot className="w-4 h-4" />
-                </Button>
+                {
+                  menuItems.map((item) => (
+                    <Link href={`/admin${item.url}`} key={item.name}>
+                      <Button variant="outline" size="icon">
+                        <item.icon className="w-4 h-4" />
+                      </Button>
+                    </Link>
+                  ))
+                }
                 
-                {/* Editar jugador - Mobile */}
-                <Button variant="outline" size="icon">
-                  <Edit className="w-4 h-4" />
-                </Button>
+              
                 
                 {/* Cerrar sesión - Mobile */}
                 <Button variant="destructive" size="icon" onClick={handleLogout}>
