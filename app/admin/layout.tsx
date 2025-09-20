@@ -3,8 +3,9 @@
 import AuthGuard from '@/components/admin/AuthGuard';
 import { useAuth } from '@/contexts/auth-context';
 import { Button } from '@/components/ui/button';
-import { Plus, Edit, LogOut, LayoutDashboard } from 'lucide-react';
+import { UserPlus, Edit, LogOut, LayoutDashboard, Bot } from 'lucide-react';
 import Link from 'next/link';
+import { menuItems } from '@/components/admin/menu-items';
 
 export default function AdminLayout({
   children,
@@ -33,7 +34,12 @@ export default function AdminLayout({
               <div className="flex items-center space-x-2">
                 {/* Agregar jugador - Mobile */}
                 <Button variant="outline" size="icon">
-                  <Plus className="w-4 h-4" />
+                  <UserPlus className="w-4 h-4" />
+                </Button>
+                
+                {/* Agregar bot - Mobile */}
+                <Button variant="outline" size="icon">
+                  <Bot className="w-4 h-4" />
                 </Button>
                 
                 {/* Editar jugador - Mobile */}
@@ -65,16 +71,16 @@ export default function AdminLayout({
               {/* Navigation */}
               <nav className="flex-1 px-4 py-6 space-y-2">
                 {/* Agregar jugador */}
-                <Button variant="ghost" className="w-full justify-start">
-                  <Plus className="w-4 h-4 mr-3" />
-                  Agregar jugador
-                </Button>
+                {menuItems.map((item) => (
+                  <Link href={`/admin${item.url}`} key={item.name}>
+                  <Button key={item.name} variant="ghost" className="w-full justify-start">
+                    <item.icon className="w-4 h-4 mr-3" />
+                    {item.name}
+                  </Button>
+                  </Link>
+                ))}
                 
-                {/* Editar jugador */}
-                <Button variant="ghost" className="w-full justify-start">
-                  <Edit className="w-4 h-4 mr-3" />
-                  Editar jugador
-                </Button>
+              
               </nav>
               
               {/* Footer del sidebar */}
