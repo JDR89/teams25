@@ -113,7 +113,7 @@ export function FormAuthAdmin({
       <Link href="/capitan">
         <Button 
           variant="outline" 
-          className="w-full bg-gradient-to-r from-red-500 via-white to-blue-500 text-gray-900  hover:from-red-600 hover:via-gray-100 hover:to-blue-600 transition-all duration-300"
+          className="cursor-pointer w-full bg-gradient-to-r from-blue-500 via-white to-red-500 text-gray-900  hover:from-blue-600 hover:via-gray-100 hover:to-red-600 transition-all duration-300"
         >
           <Crown className="mr-2 h-4 w-4" />
           Soy capitán
