@@ -1,0 +1,13 @@
+-- AlterTable
+ALTER TABLE `Jugadores` ADD COLUMN `captain` BOOLEAN NOT NULL DEFAULT false,
+    ADD COLUMN `captain_count` INTEGER NOT NULL DEFAULT 0;
+
+-- CreateTable
+CREATE TABLE `Sorteo` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `fecha` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `capitan1` VARCHAR(191) NOT NULL,
+    `capitan2` VARCHAR(191) NOT NULL,
+
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;

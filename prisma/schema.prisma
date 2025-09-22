@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -13,8 +7,40 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Admin {
-id       Int     @id @default(autoincrement())
-user     String  @unique
-password String
+model Jugadores {
+  id            Int     @id @default(autoincrement())
+  name          String
+  pos1          String
+  pos2          String
+  level         Int
+  selected      Boolean @default(false)
+  captain       Boolean @default(false)
+  captain_count Int     @default(0)
+  isBot         Boolean @default(false)
+}
+
+model Bots {
+  id       Int     @id @default(autoincrement())
+  name     String
+  pos1     String
+  pos2     String
+  level    Int
+  selected Boolean @default(false)
+  isBot    Boolean @default(true)
+}
+
+model Sorteos {
+  id       Int      @id @default(autoincrement())
+  fecha    DateTime @default(now())
+  capitan1 String
+  capitan2 String
+}
+
+model Partidos {
+  id                Int      @id @default(autoincrement())
+  fecha             DateTime @default(now())
+  capitan_equipo1   String   // Solo puede ser un jugador (nunca bot)
+  capitan_equipo2   String   // Solo puede ser un jugador (nunca bot)
+  jugadores_equipo1 String   // JSON: ["Juan", "Bot1", "Carlos"]
+  jugadores_equipo2 String   // JSON: ["Luis", "Bot2", "Pedro"]
 }

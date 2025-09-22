@@ -1,24 +1,29 @@
-import { UserPlus, Bot, Edit, BotMessageSquare } from "lucide-react";
+import { UserPlus, Bot, Edit, BotMessageSquare, Crown } from "lucide-react";
 
 export const menuItems = [
   {
-    name: "Agregar jugador",
+    name: "Agregar jugadores",
     icon: UserPlus,
-    url: "/agregar-jugador", // Reemplaza con la URL correcta
+    url: "/admin/agregar-jugador",
   },
   {
-    name: "Agregar bot regular",
-    icon: Bot,
-    url: "/agregar-bot", // Reemplaza con la URL correcta
-  },
-  {
-    name: "Editar jugador",
+    name: "Editar jugadores",
     icon: Edit,
-    url: "/editar-jugador", // Reemplaza con la URL correcta
+    url: "/admin/editar-jugador",
+  },
+   {
+    name: "Agregar bot",
+    icon: Bot,
+    url: "/admin/agregar-bot",
   },
   {
-    name: "Editar bot regular",
+    name: "Editar bot",
     icon: BotMessageSquare,
-    url: "/editar-bot", // Reemplaza con la URL correcta    
+    url: "/admin/editar-bot",    
+  },
+   {
+    name: "Ir a capitan",
+    icon: Crown,
+    url: "/capitan",    
   },
 ];

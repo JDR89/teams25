@@ -1,0 +1,5 @@
+-- AlterTable
+ALTER TABLE `Bots` ADD COLUMN `isBot` BOOLEAN NOT NULL DEFAULT true;
+
+-- AlterTable
+ALTER TABLE `Jugadores` ADD COLUMN `isBot` BOOLEAN NOT NULL DEFAULT false;
