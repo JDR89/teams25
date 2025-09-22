@@ -29,8 +29,14 @@ type Bot = {
 }
 
 const SeleccionPage = () => {
-  const [players, setPlayers] = useState<Player[]>(playersData);
-  const [bots, setBots] = useState<Bot[]>(botsData);
+  const [players, setPlayers] = useState<Player[]>(
+    playersData.sort((a, b) => a.name.localeCompare(b.name))
+  );
+  
+  const [bots, setBots] = useState<Bot[]>(
+    botsData.sort((a, b) => a.name.localeCompare(b.name))
+  );
+  
   const [searchTerm, setSearchTerm] = useState("");
   const [showType, setShowType] = useState<"all" | "players" | "bots">("players");
 
@@ -73,8 +79,11 @@ const SeleccionPage = () => {
     // Aquí puedes agregar la lógica para procesar la selección
     console.log('Jugadores seleccionados:', selectedPlayers);
     console.log('Bots seleccionados:', selectedBots);
-    alert(`Selección confirmada: ${totalSelected} jugadores/bots`);
+    
+    
   };
+
+  
 
   return (
     <div className="container mx-auto p-6 max-w-7xl">

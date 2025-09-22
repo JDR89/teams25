@@ -36,7 +36,14 @@ model Sorteos {
   capitan2 String
 }
 
-model Partidos {
+model Seleccionados {
+  id                Int      @id @default(autoincrement())
+  fecha_seleccion   DateTime @default(now())
+  jugadores_ids     String   // JSON: [1, 3, 5] - IDs de jugadores seleccionados
+  bots_ids          String   // JSON: [2, 4] - IDs de bots seleccionados
+}
+
+model Partido_confirmado {
   id                Int      @id @default(autoincrement())
   fecha             DateTime @default(now())
   capitan_equipo1   String   // Solo puede ser un jugador (nunca bot)
