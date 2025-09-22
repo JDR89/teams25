@@ -17,7 +17,6 @@ async function main() {
         pos1: bot.pos1,
         pos2: bot.pos2,
         level: bot.level,
-        selected: false,        // Valor por defecto
         isBot: true,           // Valor por defecto para bots
       },
     })
