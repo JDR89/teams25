@@ -13,9 +13,6 @@ model Jugadores {
   pos1          String
   pos2          String
   level         Int
-  selected      Boolean @default(false)
-  captain       Boolean @default(false)
-  captain_count Int     @default(0)
   isBot         Boolean @default(false)
 }
 
@@ -25,7 +22,6 @@ model Bots {
   pos1     String
   pos2     String
   level    Int
-  selected Boolean @default(false)
   isBot    Boolean @default(true)
 }
 

@@ -1,7 +1,5 @@
 import prisma from '@/lib/prisma'
 
-
-
 export const getAllPlayers = async () => {
   const players = await prisma.jugadores.findMany({
     orderBy: {
@@ -9,6 +7,16 @@ export const getAllPlayers = async () => {
     }
   })
   return players
+}
+
+// Agregar action para obtener todos los bots
+export const getAllBots = async () => {
+  const bots = await prisma.bots.findMany({
+    orderBy: {
+      name: 'asc'
+    }
+  })
+  return bots
 }
 
 
@@ -19,8 +27,8 @@ export type SeleccionadoData = {
   pos2: string;
   level: number;
   isBot: boolean;
-  isCapitan?: boolean;
 }
+
 // Action para guardar múltiples seleccionados
 export const saveSeleccionados = async (seleccionados: SeleccionadoData[]) => {
   try {
