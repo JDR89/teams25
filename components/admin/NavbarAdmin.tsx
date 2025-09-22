@@ -52,7 +52,7 @@ export default function AdminNavbar() {
   return (
     <>
       {/* Mobile Navbar */}
-      <div className="lg:hidden bg-white shadow-sm border-b relative">
+      <div className="lg:hidden bg-red-600 shadow-sm border-b-4 border-red-400 relative">
         <div className="flex items-center justify-between p-4">
           <Link href="/admin">
             <Image
@@ -67,7 +67,7 @@ export default function AdminNavbar() {
             variant="ghost"
             size="sm"
             onClick={toggleMobileMenu}
-            className="p-2"
+            className="p-2 text-white hover:bg-red-700 border-2 border-white hover:border-blue-300"
           >
             {isMobileMenuOpen ? (
               <X className="h-5 w-5" />
@@ -122,14 +122,14 @@ export default function AdminNavbar() {
 
       {/* Desktop Sidebar */}
       <div className="hidden lg:flex lg:w-52 lg:flex-col lg:fixed lg:inset-y-0">
-        <div className="flex flex-col flex-grow bg-white border-r border-gray-200 pt-5 pb-2 overflow-y-auto">
+        <div className="flex flex-col flex-grow bg-blue-600 border-r-4 border-blue-400 pt-5 pb-2 overflow-y-auto">
           <div className="flex items-center justify-center px-4">
             <Link href="/admin">
               <Image
                 src="/logoSJD.png"
                 alt="Logo"
-                width={40}
-                height={30}
+                width={50}
+                height={40}
                 className="cursor-pointer"
               />
             </Link>
@@ -142,9 +142,9 @@ export default function AdminNavbar() {
                   <Link
                     key={index}
                     href={item.url}
-                    className="group flex items-center px-2 py-2 text-sm font-medium rounded-md text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+                    className="group flex items-center px-2 py-2 text-sm font-medium rounded-md text-blue-100 hover:bg-red-600 hover:text-white transition-colors duration-200"
                   >
-                    <IconComponent className="mr-3 h-5 w-5 text-gray-400 group-hover:text-gray-500" />
+                    <IconComponent className="mr-3 h-5 w-5 text-blue-200 group-hover:text-white" />
                     {item.name}
                   </Link>
                 );
@@ -153,12 +153,12 @@ export default function AdminNavbar() {
             
             {/* Cerrar sesión al final */}
             <div className="px-2 mt-4">
-              <div className="border-t mb-4"></div>
+              <div className="border-t border-blue-500 mb-4"></div>
               <button
                 onClick={handleLogout}
-                className="group flex items-center px-2 py-2 text-sm font-medium rounded-md text-gray-600 hover:bg-gray-50 hover:text-gray-900 w-full text-left"
+                className="group flex items-center px-2 py-2 text-sm font-medium rounded-md text-blue-100 hover:bg-red-600 hover:text-white w-full text-left transition-colors duration-200"
               >
-                <LogOut className="mr-3 h-5 w-5 text-gray-400 group-hover:text-gray-500" />
+                <LogOut className="mr-3 h-5 w-5 text-blue-200 group-hover:text-white" />
                 Cerrar sesión
               </button>
             </div>
