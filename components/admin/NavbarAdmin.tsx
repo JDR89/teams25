@@ -8,6 +8,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useAuth } from "@/contexts/auth-context";
 import { useRouter } from "next/navigation";
+import LogoutButton from "./LogoutButton";
 
 export default function AdminNavbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -52,7 +53,7 @@ export default function AdminNavbar() {
   return (
     <>
       {/* Mobile Navbar */}
-      <div className="lg:hidden bg-red-600 shadow-sm border-b-4 border-red-400 relative">
+      <div className="lg:hidden bg-blue-600 shadow-sm border-b-4 border-red-400 relative">
         <div className="flex items-center justify-between p-4">
           <Link href="/admin">
             <Image
@@ -67,7 +68,7 @@ export default function AdminNavbar() {
             variant="ghost"
             size="sm"
             onClick={toggleMobileMenu}
-            className="p-2 text-white hover:bg-red-700 border-2 border-white hover:border-blue-300"
+            className="p-2 text-white hover:bg-blue-700 border-2 border-white hover:border-blue-300"
           >
             {isMobileMenuOpen ? (
               <X className="h-5 w-5" />
@@ -88,12 +89,12 @@ export default function AdminNavbar() {
                     key={index}
                     href={item.url}
                     onClick={closeMobileMenu}
-                    className="w-full flex items-start gap-2 p-2 text-left hover:bg-gray-50 rounded-lg transition-colors"
+                    className="w-full flex items-start gap-2 p-2 text-left hover:bg-red-600 rounded-lg transition-colors"
                   >
                     <IconComponent className="h-5 w-5 text-blue-600 mt-0.5 flex-shrink-0" />
                     <div className="flex-1 min-w-0">
                       <div className="font-medium text-gray-900">{item.name}</div>
-                      <div className="text-sm text-gray-500 mt-0.5">
+                      <div className="text-sm text-gray-800 mt-0.5">
                         {getDescription(item.name)}
                       </div>
                     </div>
@@ -103,18 +104,7 @@ export default function AdminNavbar() {
               
               <div className="border-t my-2"></div>
               
-              <button
-                onClick={handleLogout}
-                className="w-full flex items-start gap-3 p-3 text-left hover:bg-gray-50 rounded-lg transition-colors"
-              >
-                <LogOut className="h-5 w-5 text-red-600 mt-0.5 flex-shrink-0" />
-                <div className="flex-1 min-w-0">
-                  <div className="font-medium text-gray-900">Cerrar sesión</div>
-                  <div className="text-sm text-gray-500 mt-0.5">
-                    Salir del panel de administración
-                  </div>
-                </div>
-              </button>
+             <LogoutButton />
             </div>
           </div>
         )}
@@ -122,7 +112,7 @@ export default function AdminNavbar() {
 
       {/* Desktop Sidebar */}
       <div className="hidden lg:flex lg:w-52 lg:flex-col lg:fixed lg:inset-y-0">
-        <div className="flex flex-col flex-grow bg-blue-600 border-r-4 border-blue-400 pt-5 pb-2 overflow-y-auto">
+        <div className="flex flex-col flex-grow bg-blue-600 border-r-4 border-red-400 pt-5 pb-2 overflow-y-auto">
           <div className="flex items-center justify-center px-4">
             <Link href="/admin">
               <Image

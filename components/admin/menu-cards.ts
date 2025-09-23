@@ -8,7 +8,7 @@ export const menuCards = [
     bgColor: "bg-blue-100",
     hoverBgColor: "group-hover:bg-blue-200",
     iconColor: "text-blue-600",
-    borderHoverColor: "hover:border-blue-300",
+    borderHoverColor: "hover:border-red-400 border-2",
   },
   {
     name: "Sortear capitanías",
@@ -17,7 +17,7 @@ export const menuCards = [
     bgColor: "bg-green-100",
     hoverBgColor: "group-hover:bg-green-200",
     iconColor: "text-green-600",
-    borderHoverColor: "hover:border-green-300",
+    borderHoverColor: "hover:border-red-400 border-2",
   },
   {
     name: "Informes",
@@ -26,6 +26,6 @@ export const menuCards = [
     bgColor: "bg-purple-100",
     hoverBgColor: "group-hover:bg-purple-200",
     iconColor: "text-purple-600",
-    borderHoverColor: "hover:border-purple-300",
+    borderHoverColor: "hover:border-red-400 border-2",
   },
 ];
