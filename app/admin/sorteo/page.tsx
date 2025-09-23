@@ -1,6 +1,5 @@
 
 import { getAllSeleccionados } from "@/utils/player-actions/actions";
-import { Separator } from "@/components/ui/separator";
 import NoDataInfo from "@/components/sorteo/NoDataInfo";
 import PanelSorteo from "@/components/sorteo/PanelSorteo";
 
@@ -32,7 +31,7 @@ const SorteoPage = async () => {
       {/* Grid con cards más pequeñas */}
       <PanelSorteo playersOnly={playersOnly} />
 
-      <Separator className="my-6" />
+      
 
     </div>
   );

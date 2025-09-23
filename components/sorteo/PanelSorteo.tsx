@@ -1,9 +1,12 @@
 "use client"
-import React, { useState } from 'react'
-import { Card, CardContent } from "@/components/ui/card";
+import React, { useState, useEffect } from 'react'
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Crown } from 'lucide-react';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { saveCapitanes, getAllSorteos } from "@/utils/sorteo-actions/actions";
+import { toast } from "sonner";
 
 interface Player {
   id: number;
@@ -18,8 +21,39 @@ interface PanelSorteoProps {
   playersOnly: Player[];
 }
 
+interface EstadisticaCapitan {
+  id: number;
+  name: string;
+  vecesElegido: number;
+}
+
 const PanelSorteo = ({ playersOnly }: PanelSorteoProps) => {
   const [selectedCaptains, setSelectedCaptains] = useState<Player[]>([]);
+  const [estadisticas, setEstadisticas] = useState<EstadisticaCapitan[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [loadingStats, setLoadingStats] = useState(true);
+
+  // Cargar estadísticas al montar el componente
+  useEffect(() => {
+    loadEstadisticas();
+  }, []);
+
+  const loadEstadisticas = async () => {
+    try {
+      setLoadingStats(true);
+      const result = await getAllSorteos();
+      if (result.success && result.data) {
+        setEstadisticas(result.data as EstadisticaCapitan[]);
+      }
+    } catch (error) {
+      console.error("Error al cargar estadísticas:", error);
+      toast.error("Error al cargar estadísticas", {
+        description: "No se pudieron cargar las estadísticas de capitanías"
+      });
+    } finally {
+      setLoadingStats(false);
+    }
+  };
 
   // Función para manejar click manual en un jugador
   const handlePlayerClick = (player: Player) => {
@@ -43,7 +77,9 @@ const PanelSorteo = ({ playersOnly }: PanelSorteoProps) => {
   // Función para sorteo aleatorio
   const handleRandomSelection = () => {
     if (playersOnly.length < 2) {
-      alert("Se necesitan al menos 2 jugadores para hacer un sorteo");
+      toast.error("Jugadores insuficientes", {
+        description: "Se necesitan al menos 2 jugadores para hacer un sorteo"
+      });
       return;
     }
 
@@ -52,23 +88,53 @@ const PanelSorteo = ({ playersOnly }: PanelSorteoProps) => {
     // Tomar los primeros 2
     const randomCaptains = shuffled.slice(0, 2);
     setSelectedCaptains(randomCaptains);
+    
+    toast.success("Capitanes sorteados", {
+      description: `${randomCaptains.map(cap => cap.name).join(" y ")} han sido seleccionados`
+    });
   };
 
-  // Función para confirmar selección
-  const handleConfirm = () => {
+  // Función para confirmar selección y guardar en base de datos
+  const handleConfirm = async () => {
     if (selectedCaptains.length !== 2) {
-      alert("Debes seleccionar exactamente 2 capitanes");
+      toast.error("Selección incompleta", {
+        description: "Debes seleccionar exactamente 2 capitanes"
+      });
       return;
     }
     
-    console.log("Capitanes seleccionados:", selectedCaptains);
-    // Aquí puedes agregar la lógica para guardar en base de datos
-    alert(`Capitanes confirmados: ${selectedCaptains.map(cap => cap.name).join(" y ")}`);
+    try {
+      setLoading(true);
+      const result = await saveCapitanes(selectedCaptains[0].id, selectedCaptains[1].id);
+      
+      if (result.success) {
+        toast.success("Capitanes guardados exitosamente", {
+          description: `${selectedCaptains.map(cap => cap.name).join(" y ")} han sido registrados como capitanes`
+        });
+        setSelectedCaptains([]);
+        // Recargar estadísticas
+        await loadEstadisticas();
+      } else {
+        toast.error("Error al guardar capitanes", {
+          description: result.error || 'No se pudieron guardar los capitanes'
+        });
+      }
+    } catch (error) {
+      console.error("Error al guardar capitanes:", error);
+      toast.error("Error interno", {
+        description: "Ocurrió un error inesperado al guardar los capitanes"
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   // Función para limpiar selección
   const handleClear = () => {
     setSelectedCaptains([]);
+    toast.info("Selección limpiada", {
+      description: "Se ha limpiado la selección de capitanes"
+    });
   };
 
   return (
@@ -117,27 +183,29 @@ const PanelSorteo = ({ playersOnly }: PanelSorteoProps) => {
       {playersOnly.length > 0 && (
         <>
           <Separator className="my-6" />
-          <div className="text-center justify-center flex space-x-4">
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center">
             <Button 
               onClick={handleRandomSelection}
-              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md"
+              disabled={loading}
+              className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md"
             >
-              Sortear Capitanes
+              Sortear
             </Button>
 
             <Button 
               onClick={handleConfirm}
-              disabled={selectedCaptains.length !== 2}
-              className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md disabled:bg-gray-400 disabled:cursor-not-allowed"
+              disabled={selectedCaptains.length !== 2 || loading}
+              className="w-full sm:w-auto bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md disabled:bg-gray-400 disabled:cursor-not-allowed"
             >
-              Confirmar ({selectedCaptains.length}/2)
+              {loading ? "Guardando..." : `Confirmar (${selectedCaptains.length}/2)`}
             </Button>
 
             {selectedCaptains.length > 0 && (
               <Button 
                 onClick={handleClear}
+                disabled={loading}
                 variant="outline"
-                className="px-4 py-2 rounded-md"
+                className="w-full sm:w-auto px-4 py-2 rounded-md"
               >
                 Limpiar
               </Button>
@@ -145,6 +213,56 @@ const PanelSorteo = ({ playersOnly }: PanelSorteoProps) => {
           </div>
         </>
       )}
+
+      {/* Tabla de estadísticas */}
+      <Separator className="my-8" />
+      
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-xl font-bold text-gray-800">
+            Estadísticas de Capitanías
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          {loadingStats ? (
+            <div className="text-center py-8">
+              <p className="text-gray-500">Cargando estadísticas...</p>
+            </div>
+          ) : estadisticas.length === 0 ? (
+            <div className="text-center py-8">
+              <p className="text-gray-500">No hay sorteos registrados aún</p>
+            </div>
+          ) : (
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="w-[100px]">Posición</TableHead>
+                  <TableHead>Nombre del Jugador</TableHead>
+                  <TableHead className="text-right">Veces Elegido</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {estadisticas.map((jugador, index) => (
+                  <TableRow key={jugador.id}>
+                    <TableCell className="font-medium">
+                      <div className="flex items-center">
+                        {index === 0 && <Crown className="h-4 w-4 text-yellow-500 mr-2" />}
+                        #{index + 1}
+                      </div>
+                    </TableCell>
+                    <TableCell className="font-medium">{jugador.name}</TableCell>
+                    <TableCell className="text-right">
+                      <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-sm">
+                        {jugador.vecesElegido}
+                      </span>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          )}
+        </CardContent>
+      </Card>
     </div>
   )
 }
