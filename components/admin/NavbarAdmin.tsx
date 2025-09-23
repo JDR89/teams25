@@ -89,7 +89,7 @@ export default function AdminNavbar() {
                     key={index}
                     href={item.url}
                     onClick={closeMobileMenu}
-                    className="w-full flex items-start gap-2 p-2 text-left hover:bg-red-600 rounded-lg transition-colors"
+                    className="w-full flex items-start gap-2 p-2 text-left hover:bg-red-500 rounded-lg transition-colors"
                   >
                     <IconComponent className="h-5 w-5 text-blue-600 mt-0.5 flex-shrink-0" />
                     <div className="flex-1 min-w-0">

@@ -1,5 +1,5 @@
 [
-  { "id": 1, "name": "Bot1", "pos1": "del", "pos2": "med", "level": 4, "selected": false, "isBot": true },
-  { "id": 2, "name": "Bot2", "pos1": "def", "pos2": "med", "level": 3, "selected": false, "isBot": true },
-  { "id": 3, "name": "Bot3", "pos1": "med", "pos2": "del", "level": 5, "selected": false, "isBot": true }
+  { "id": 1, "name": "Bot1", "pos1": "del", "pos2": "med", "level": 88, "isBot": true },
+  { "id": 2, "name": "Bot2", "pos1": "def", "pos2": "med", "level": 91, "isBot": true },
+  { "id": 3, "name": "Bot3", "pos1": "med", "pos2": "del", "level": 85, "isBot": true }
 ]

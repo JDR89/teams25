@@ -28,8 +28,8 @@ model Bots {
 model Sorteos {
   id       Int      @id @default(autoincrement())
   fecha    DateTime @default(now())
-  capitan1 String
-  capitan2 String
+  capitan1 Int
+  capitan2 Int
 }
 
 model Seleccionados {

@@ -32,6 +32,15 @@ export type SeleccionadoData = {
 // Action para guardar múltiples seleccionados
 export const saveSeleccionados = async (seleccionados: SeleccionadoData[]) => {
   try {
+    // Validación: mínimo 10 seleccionados
+    if (seleccionados.length < 10) {
+      return {
+        success: false,
+        error: 'Selección insuficiente',
+        details: `Se requieren al menos 10 jugadores/bots. Recibidos: ${seleccionados.length}`
+      };
+    }
+
     // Separar jugadores y bots
     const jugadores = seleccionados.filter(item => !item.isBot);
     const bots = seleccionados.filter(item => item.isBot);

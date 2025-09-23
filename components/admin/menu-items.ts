@@ -1,4 +1,4 @@
-import { UserPlus, Bot, Edit, BotMessageSquare, Crown } from "lucide-react";
+import { UserPlus, Bot, Edit, BotMessageSquare, Crown, Dices } from "lucide-react";
 
 export const menuItems = [
   {
@@ -20,6 +20,11 @@ export const menuItems = [
     name: "Editar bot",
     icon: BotMessageSquare,
     url: "/admin/editar-bot",    
+  },
+  {
+    name: "Ir a sorteo",
+    icon: Dices,
+    url: "/admin/sorteo",    
   },
    {
     name: "Ir a capitan",

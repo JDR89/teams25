@@ -1,11 +1,41 @@
 
+import { getAllSeleccionados } from "@/utils/player-actions/actions";
+import { Separator } from "@/components/ui/separator";
+import NoDataInfo from "@/components/sorteo/NoDataInfo";
+import PanelSorteo from "@/components/sorteo/PanelSorteo";
 
-const Sorteo = () => {
+
+const SorteoPage = async () => {
+  // Obtener los seleccionados de la base de datos
+  const result = await getAllSeleccionados();
+
+  if (!result.success || !result.data || result.data.length === 0) {
+    return (
+      <NoDataInfo />
+    );
+  }
+
+  // Obtener la selección más reciente
+  const latestSelection = result.data[0];
+  // Filtrar solo jugadores (no bots)
+  const playersOnly = latestSelection.jugadores;
+
+  
+
   return (
-    <div>
-      Sorteo
-    </div>
-  )
-}
+    <div className="container mx-auto p-6 max-w-7xl">
+      <div className="mb-6">
+        <h1 className="text-3xl font-bold text-gray-800 mb-2">Sorteo de Capitanías</h1>
+       
+      </div>
 
-export default Sorteo
+      {/* Grid con cards más pequeñas */}
+      <PanelSorteo playersOnly={playersOnly} />
+
+      <Separator className="my-6" />
+
+    </div>
+  );
+};
+
+export default SorteoPage;

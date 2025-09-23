@@ -16,7 +16,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
           {/* Main content */}
           <div className="lg:pl-52 flex flex-col flex-1">
             <main className="flex-1">
-              <div className="py-6">
+              <div className="">
                 {children}
               </div>
             </main>
