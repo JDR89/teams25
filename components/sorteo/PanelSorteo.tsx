@@ -246,7 +246,7 @@ const PanelSorteo = ({ playersOnly }: PanelSorteoProps) => {
                   <TableRow key={jugador.id}>
                     <TableCell className="font-medium">
                       <div className="flex items-center">
-                        {index === 0 && <Crown className="h-4 w-4 text-yellow-500 mr-2" />}
+                        
                         #{index + 1}
                       </div>
                     </TableCell>
