@@ -121,3 +121,55 @@ export async function getAllSorteos(): Promise<ActionResponse> {
     };
   }
 }
+
+// Acción para obtener el último sorteo con nombres de capitanes
+export async function getLatestSorteo(): Promise<ActionResponse> {
+  try {
+    // Obtener el sorteo más reciente
+    const ultimoSorteo = await prisma.sorteos.findFirst({
+      orderBy: {
+        fecha: 'desc'
+      }
+    });
+
+    if (!ultimoSorteo) {
+      return {
+        success: false,
+        error: "No hay sorteos registrados"
+      };
+    }
+
+    // Obtener los nombres de los capitanes
+    const [capitan1, capitan2] = await Promise.all([
+      prisma.jugadores.findUnique({ where: { id: ultimoSorteo.capitan1 } }),
+      prisma.jugadores.findUnique({ where: { id: ultimoSorteo.capitan2 } })
+    ]);
+
+    const sorteoConNombres = {
+      id: ultimoSorteo.id,
+      fecha: ultimoSorteo.fecha,
+      capitan1: {
+        id: ultimoSorteo.capitan1,
+        name: capitan1?.name || 'Capitán no encontrado'
+      },
+      capitan2: {
+        id: ultimoSorteo.capitan2,
+        name: capitan2?.name || 'Capitán no encontrado'
+      }
+    };
+
+    return {
+      success: true,
+      message: "Último sorteo obtenido exitosamente",
+      data: sorteoConNombres
+    };
+
+  } catch (error) {
+    console.error("Error al obtener el último sorteo:", error);
+    return {
+      success: false,
+      error: "Error interno del servidor al obtener el último sorteo",
+      details: error
+    };
+  }
+}

@@ -1,14 +1,16 @@
 
 import PanelCapitan from "@/components/capitan/PanelCapitan";
 import { getAllSeleccionados } from "@/utils/player-actions/actions";
+import { getLatestSorteo } from "@/utils/sorteo-actions/actions";
+import { UltimoSorteo } from "@/components/capitan/PanelCapitan";
 
 export default async function Capitan() {
   const seleccionadosResult = await getAllSeleccionados();
+  const sorteoResult = await getLatestSorteo();
 
   if (!seleccionadosResult.success || !seleccionadosResult.data) {
     return (
       <div className="p-6">
-       
         <div className="text-red-600">Error al cargar los datos</div>
       </div>
     );
@@ -23,10 +25,14 @@ export default async function Capitan() {
   }
 
   const seleccionados = seleccionadosResult.data;
+  const ultimoSorteo = sorteoResult.success ? (sorteoResult.data as UltimoSorteo) : null;
 
   return (
     <div>
-      <PanelCapitan seleccionados={seleccionados} />
+      <PanelCapitan 
+        seleccionados={seleccionados} 
+        ultimoSorteo={ultimoSorteo}
+      />
     </div>
   );
 }

@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
-import Link from "next/link";
+
 
 // Tipo unificado para manejar tanto jugadores como bots (solo para el estado del componente)
 type Entity = {
@@ -87,10 +87,18 @@ const PanelSeleccion = ({ initialPlayers, initialBots, onSaveSelection }: PanelS
       return;
     }
   
-    // Validación de mínimo 10 seleccionados
+    // Validación de mínimo 10 seleccionados y número par
     if (totalSelected < 10) {
       toast.error("Selección insuficiente", {
         description: `Necesitas seleccionar al menos 10 jugadores/bots. Actualmente tienes ${totalSelected} seleccionados.`
+      });
+      return;
+    }
+
+    // Validación de número par
+    if (totalSelected % 2 !== 0) {
+      toast.error("Número impar de jugadores", {
+        description: `Necesitas seleccionar un número par de jugadores/bots. Actualmente tienes ${totalSelected} seleccionados.`
       });
       return;
     }
