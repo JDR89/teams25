@@ -6,6 +6,9 @@ import { useTeams } from "@/contexts/teams-context";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Player } from "@/utils/teams";
+import { copyTeamsToClipboard } from "@/utils/clipboard";
+import { toast } from "sonner";
+import Image from "next/image";
 
 export default function ArmadoPage() {
   const { teamsData, clearTeamsData, setTeamsData } = useTeams();
@@ -96,16 +99,43 @@ export default function ArmadoPage() {
   const sortedTeamA = sortPlayersByPosition([...teamsData.teamA.players]);
   const sortedTeamB = sortPlayersByPosition([...teamsData.teamB.players]);
 
+  // Función para manejar el copiado de equipos
+  const handleCopyTeams = async () => {
+    const success = await copyTeamsToClipboard(sortedTeamA, sortedTeamB);
+    if (success) {
+      toast.success("¡Equipos copiados!", {
+        description: "Los equipos se han copiado al portapapeles exitosamente"
+      });
+    } else {
+      toast.error("Error al copiar", {
+        description: "No se pudieron copiar los equipos al portapapeles"
+      });
+    }
+  };
+
   return (
     <div className="p-6 max-w-6xl mx-auto">
-      <h1 className="text-3xl font-bold text-gray-800 mb-8 text-center">Equipos Armados</h1>
-      
+      <div className="flex justify-center items-center gap-3 mb-8">
+        <h1 className="text-2xl font-bold text-gray-800 text-center">Equipos</h1>
+        <button 
+          className="cursor-pointer flex items-center justify-center hover:scale-110 transition-transform"
+          onClick={handleCopyTeams}
+          title="Copiar equipos al portapapeles"
+        >
+          <Image
+            src="/manitoSJD.png"
+            alt="Copiar"
+            width={30}
+            height={30}
+          />
+        </button>
+      </div>
       <div className="grid lg:grid-cols-2 gap-12">
         {/* Equipo A - Promedio a la derecha */}
         <div className="flex gap-4">
           <div className="flex-1 bg-white rounded-lg shadow-lg border border-gray-200 overflow-hidden">
             <div className="bg-blue-600 text-white p-4">
-              <h2 className="text-xl font-bold text-center">Equipo A</h2>
+              <h2 className="text-xl font-bold text-center">Equipo 1</h2>
             </div>
             
             <Table>
@@ -165,7 +195,7 @@ export default function ArmadoPage() {
           
           <div className="flex-1 bg-white rounded-lg shadow-lg border border-gray-200 overflow-hidden">
             <div className="bg-red-600 text-white p-4">
-              <h2 className="text-xl font-bold text-center">Equipo B</h2>
+              <h2 className="text-xl font-bold text-center">Equipo 2</h2>
             </div>
             
             <Table>

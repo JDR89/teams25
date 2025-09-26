@@ -13,8 +13,19 @@ export type Team = {
 };
 
 // --- Auxiliar ---
-function adjustFormation(team: Player[]): Player[] {
-  const formation = { def: 3, med: 3, del: 1 };
+function adjustFormation(team: Player[], teamSize: number): Player[] {
+  // Formaciones dinámicas según el tamaño del equipo
+  const formations: { [key: number]: { def: number; med: number; del: number } } = {
+    5: { def: 2, med: 2, del: 1 },
+    6: { def: 2, med: 3, del: 1 },
+    7: { def: 3, med: 3, del: 1 },
+    8: { def: 3, med: 3, del: 2 },
+    9: { def: 3, med: 4, del: 2 },
+    10: { def: 4, med: 4, del: 2 },
+    11: { def: 4, med: 5, del: 2 }
+  };
+
+  const formation = formations[teamSize] || { def: Math.floor(teamSize * 0.4), med: Math.floor(teamSize * 0.4), del: Math.ceil(teamSize * 0.2) };
   const final: Player[] = [];
   const counts = { def: 0, med: 0, del: 0 };
 
@@ -37,22 +48,29 @@ function adjustFormation(team: Player[]): Player[] {
     }
   }
 
-  // Si todavía faltan jugadores para llegar a 8, relleno con los que queden
+  // Si todavía faltan jugadores para llegar al tamaño del equipo, relleno con los que queden
   for (const p of team) {
-    if (final.length >= 8) break;
+    if (final.length >= teamSize) break;
     if (!final.includes(p)) {
       final.push(p);
     }
   }
 
-  return final.slice(0, 8);
+  return final.slice(0, teamSize);
 }
 
 // --- Principal ---
 export function balanceTeams(players: Player[]): { teamA: Team; teamB: Team } {
-  if (players.length < 16) {
-    throw new Error("Necesitas al menos 16 jugadores para formar dos equipos de 8.");
+  if (players.length < 10) {
+    throw new Error("Necesitas al menos 10 jugadores para formar dos equipos.");
   }
+
+  if (players.length > 22) {
+    throw new Error("Máximo 22 jugadores permitidos.");
+  }
+
+  // Calculo el tamaño de cada equipo
+  const teamSize = Math.floor(players.length / 2);
 
   // Ordeno por nivel para repartir equitativo
   const sorted = [...players].sort((a, b) => b.level - a.level);
@@ -69,8 +87,8 @@ export function balanceTeams(players: Player[]): { teamA: Team; teamB: Team } {
     }
   });
 
-  const finalA = adjustFormation(teamA);
-  const finalB = adjustFormation(teamB);
+  const finalA = adjustFormation(teamA, teamSize);
+  const finalB = adjustFormation(teamB, teamSize);
 
   return {
     teamA: {
