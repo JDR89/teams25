@@ -3,8 +3,12 @@ import { getAllSeleccionados } from "@/utils/player-actions/actions";
 import NoDataInfo from "@/components/sorteo/NoDataInfo";
 import PanelSorteo from "@/components/sorteo/PanelSorteo";
 
+export const revalidate = 0;
 
 const SorteoPage = async () => {
+  // Esta línea hace que la página siempre haga fetch fresco
+  
+
   // Obtener los seleccionados de la base de datos
   const result = await getAllSeleccionados();
 
