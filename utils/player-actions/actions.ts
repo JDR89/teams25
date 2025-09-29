@@ -152,3 +152,76 @@ export const clearAllSeleccionados = async () => {
   }
 }
 
+
+// Action para agregar un nuevo jugador
+export const addPlayer = async (playerData: {
+  name: string;
+  pos1: string;
+  pos2: string;
+  level: number;
+}) => {
+  try {
+    // Validaciones
+    if (!playerData.name.trim()) {
+      return {
+        success: false,
+        error: 'El nombre es requerido'
+      };
+    }
+
+    if (playerData.level < 80 || playerData.level > 99) {
+      return {
+        success: false,
+        error: 'El nivel debe estar entre 80 y 100'
+      };
+    }
+
+    const validPositions = ['del', 'med', 'def'];
+    if (!validPositions.includes(playerData.pos1) || !validPositions.includes(playerData.pos2)) {
+      return {
+        success: false,
+        error: 'Las posiciones deben ser: del, med o def'
+      };
+    }
+
+    // Verificar si ya existe un jugador con ese nombre
+    const existingPlayer = await prisma.jugadores.findFirst({
+      where: {
+        name: playerData.name.trim()
+      }
+    });
+
+    if (existingPlayer) {
+      return {
+        success: false,
+        error: 'Ya existe un jugador con ese nombre'
+      };
+    }
+
+    // Crear el jugador
+    const newPlayer = await prisma.jugadores.create({
+      data: {
+        name: playerData.name.trim(),
+        pos1: playerData.pos1,
+        pos2: playerData.pos2,
+        level: playerData.level,
+        isBot: false
+      }
+    });
+
+    return {
+      success: true,
+      data: newPlayer,
+      message: `Jugador ${newPlayer.name} agregado exitosamente`
+    };
+
+  } catch (error) {
+    console.error('Error al agregar jugador:', error);
+    return {
+      success: false,
+      error: 'Error al guardar en la base de datos',
+      details: error
+    };
+  }
+};
+

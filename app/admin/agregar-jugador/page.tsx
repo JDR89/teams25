@@ -1,11 +1,25 @@
+import { addPlayer } from "@/utils/player-actions/actions";
+import FormAgregarJugador from "@/components/admin/FormAgregarJugador";
+import { PlayerFormData } from "@/schemas/formSchema";
 
-
-const AgregarJugador = () => {
-  return (
-    <div>
-      agregar jugador
-    </div>
-  )
+// Server Action
+async function handleAddPlayer(data: PlayerFormData) {
+  "use server";
+  
+  try {
+    const result = await addPlayer(data);
+    return result;
+  } catch (error) {
+    console.error("Error en server action:", error);
+    return {
+      success: false,
+      error: "Error interno del servidor"
+    };
+  }
 }
 
-export default AgregarJugador
+const AgregarJugadorPage = () => {
+  return <FormAgregarJugador addPlayerAction={handleAddPlayer} />;
+};
+
+export default AgregarJugadorPage;
