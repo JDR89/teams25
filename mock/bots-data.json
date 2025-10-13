@@ -1,5 +1,4 @@
 [
-  { "id": 1, "name": "Bot1", "pos1": "del", "pos2": "med", "level": 88, "isBot": true },
-  { "id": 2, "name": "Bot2", "pos1": "def", "pos2": "med", "level": 91, "isBot": true },
-  { "id": 3, "name": "Bot3", "pos1": "med", "pos2": "del", "level": 85, "isBot": true }
+  { "id": 1, "name": "Fran", "pos1": "med", "pos2": "del", "level": 88, "isBot": true },
+  { "id": 2, "name": "Joni", "pos1": "def", "pos2": "def", "level": 91, "isBot": true }
 ]

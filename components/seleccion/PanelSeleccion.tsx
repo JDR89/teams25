@@ -217,16 +217,26 @@ const PanelSeleccion = ({ initialPlayers, initialBots, onSaveSelection }: PanelS
         {filteredEntities.map((entity) => (
           <Card 
             key={`${entity.isBot ? 'bot' : 'player'}-${entity.id}`}
-            className={`cursor-pointer transition-all duration-200 hover:shadow-lg ${
+            className={`cursor-pointer transition-all duration-200 hover:shadow-lg min-h-[120px] ${
               entity.selected 
                 ? 'bg-green-100 border-green-300' 
                 : 'hover:bg-gray-50'
             }`}
             onClick={() => toggleSelection(entity.id, entity.isBot)}
           >
-            <CardContent className="p-3">
-              <div className="text-center">
-                <h3 className="font-semibold text-sm mb-2">{entity.name}</h3>
+            <CardContent className="p-3 h-full flex flex-col items-center justify-center">
+              <div className="text-center w-full">
+                <h3
+                  className="font-semibold text-sm mb-2 leading-tight break-words [overflow-wrap:anywhere] [hyphens:auto]"
+                  style={{
+                    display: '-webkit-box',
+                    WebkitLineClamp: 2,
+                    WebkitBoxOrient: 'vertical',
+                    overflow: 'hidden'
+                  }}
+                >
+                  {entity.name}
+                </h3>
                 <div className="flex justify-center">
                   {entity.isBot && (
                     <span className="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">

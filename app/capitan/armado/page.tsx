@@ -116,7 +116,7 @@ export default function ArmadoPage() {
   return (
     <div className="p-6 max-w-6xl mx-auto">
       <div className="flex justify-center items-center gap-3 mb-8">
-        <h1 className="text-2xl font-bold text-gray-800 text-center">Equipos</h1>
+        
         <button 
           className="cursor-pointer flex items-center justify-center hover:scale-110 transition-transform"
           onClick={handleCopyTeams}
