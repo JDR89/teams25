@@ -11,7 +11,10 @@ type SelectedEntityData = {
   isBot: boolean;
 }
 
+export const revalidate = 0;
+
 const SeleccionPage = async () => {
+  
   // Obtener datos del servidor
   const players = await getAllPlayers();
   const bots = await getAllBots();

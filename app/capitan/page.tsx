@@ -4,7 +4,7 @@ import { getAllSeleccionados } from "@/utils/player-actions/actions";
 import { getLatestSorteo } from "@/utils/sorteo-actions/actions";
 import { UltimoSorteo } from "@/components/capitan/PanelCapitan";
 
-// Esta línea hace que la página siempre haga fetch fresco
+
 export const revalidate = 0;
 
 export default async function Capitan() {
