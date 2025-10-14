@@ -9,6 +9,7 @@ import { Player } from "@/utils/teams";
 import { copyTeamsToClipboard } from "@/utils/clipboard";
 import { toast } from "sonner";
 import Image from "next/image";
+import { Crown } from "lucide-react";
 
 export default function ArmadoPage() {
   const { teamsData, clearTeamsData, setTeamsData } = useTeams();
@@ -96,6 +97,9 @@ export default function ArmadoPage() {
     router.push('/capitan');
   };
 
+  const isCaptain = (id: number) =>
+    !!teamsData?.captains && (id === teamsData.captains.aId || id === teamsData.captains.bId);
+
   const sortedTeamA = sortPlayersByPosition([...teamsData.teamA.players]);
   const sortedTeamB = sortPlayersByPosition([...teamsData.teamB.players]);
 
@@ -146,6 +150,7 @@ export default function ArmadoPage() {
                 </TableRow>
               </TableHeader>
               <TableBody>
+                {/* En la tabla del Equipo 1, dentro del map */}
                 {sortedTeamA.map((player, index) => (
                   <TableRow 
                     key={player.id} 
@@ -163,6 +168,11 @@ export default function ArmadoPage() {
                     </TableCell>
                     <TableCell className="font-medium text-gray-800">
                       {player.name}
+                      {isCaptain(player.id) && (
+                        <span className="ml-1 align-middle text-[10px] font-semibold text-yellow-700 bg-yellow-100 rounded px-1.5 py-0.5">
+                          C
+                        </span>
+                      )}
                     </TableCell>
                   </TableRow>
                 ))}
@@ -206,6 +216,7 @@ export default function ArmadoPage() {
                 </TableRow>
               </TableHeader>
               <TableBody>
+                {/* En la tabla del Equipo 2, dentro del map */}
                 {sortedTeamB.map((player, index) => (
                   <TableRow 
                     key={player.id} 
@@ -223,6 +234,9 @@ export default function ArmadoPage() {
                     </TableCell>
                     <TableCell className="font-medium text-gray-800">
                       {player.name}
+                      {isCaptain(player.id) && (
+                        <Crown className="ml-1 inline text-yellow-600" size={14} />
+                      )}
                     </TableCell>
                   </TableRow>
                 ))}

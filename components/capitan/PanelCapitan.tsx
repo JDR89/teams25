@@ -5,6 +5,9 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { balanceTeams, type Player } from "@/utils/teams";
 import { useTeams } from "@/contexts/teams-context";
+import { Crown } from "lucide-react";
+
+export const revalidate = 0
 
 // Tipos para el Panel Capitán
 export interface Jugador {
@@ -75,7 +78,6 @@ export default function PanelCapitan({ seleccionados, ultimoSorteo }: PanelCapit
 
   const handleArmarEquipos = () => {
     try {
-      // Convertir jugadoresConfirmados al formato que espera balanceTeams
       const playersForBalance: Player[] = jugadoresConfirmados.map(jugador => ({
         id: jugador.id,
         name: jugador.name,
@@ -85,13 +87,16 @@ export default function PanelCapitan({ seleccionados, ultimoSorteo }: PanelCapit
         isBot: jugador.tipo === 'bot'
       }));
 
-      // Ejecutar la función de balance
-      const teams = balanceTeams(playersForBalance);
+      const teams = balanceTeams(playersForBalance, {
+        captainAId: ultimoSorteo?.capitan1.id,
+        captainBId: ultimoSorteo?.capitan2.id,
+      });
       
       // Guardar en el context
-      setTeamsData(teams);
-      
-      // Redirigir a la página de armado
+      setTeamsData({
+        ...teams,
+        captains: { aId: ultimoSorteo?.capitan1.id, bId: ultimoSorteo?.capitan2.id }, // añade capitanes
+      });
       router.push('/capitan/armado');
       
     } catch (error) {
@@ -117,6 +122,10 @@ export default function PanelCapitan({ seleccionados, ultimoSorteo }: PanelCapit
   }
 
   const fechaSeleccion = seleccionados[0].fecha_seleccion;
+
+  // Helper: identificar capitán
+  const isCaptain = (id: number) =>
+    !!ultimoSorteo && (id === ultimoSorteo.capitan1.id || id === ultimoSorteo.capitan2.id);
 
   return (
     <div className="p-6">
@@ -148,31 +157,32 @@ export default function PanelCapitan({ seleccionados, ultimoSorteo }: PanelCapit
       
       <div className="bg-white rounded-lg shadow-lg p-6">
         <h2 className="text-lg font-semibold text-gray-800 mb-4">Jugadores Seleccionados</h2>
-        
         {/* Grilla de jugadores */}
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 mb-6">
           {jugadoresConfirmados.map((jugador) => (
-            <div 
-              key={`${jugador.tipo}-${jugador.id}`} 
+            <div
+              key={`${jugador.tipo}-${jugador.id}`}
               className="bg-gray-50 rounded-lg p-3 text-center border hover:shadow-md transition-shadow"
             >
               <div className="font-medium text-gray-800 text-sm">
                 {jugador.name}
+                {isCaptain(jugador.id) && (
+                  <Crown className="ml-1 inline text-yellow-600" size={14} />
+                )}
               </div>
-              <div className={`text-xs mt-1 px-2 py-1 rounded-full inline-block ${
-                jugador.tipo === 'jugador' 
-                  ? 'bg-blue-100 text-blue-700' 
-                  : 'bg-green-100 text-green-700'
-              }`}>
+              <div
+                className={`text-xs mt-1 px-2 py-1 rounded-full inline-block ${
+                  jugador.tipo === "jugador" ? "bg-blue-100 text-blue-700" : "bg-green-100 text-green-700"
+                }`}
+              >
                 {jugador.tipo}
               </div>
             </div>
           ))}
         </div>
-        
         {/* Botón centrado */}
         <div className="flex justify-center">
-          <button 
+          <button
             onClick={handleArmarEquipos}
             className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-8 rounded-lg shadow-md transition-colors"
           >

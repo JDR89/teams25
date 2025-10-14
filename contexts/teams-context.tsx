@@ -6,6 +6,7 @@ import { type Team } from '@/utils/teams';
 interface TeamsData {
   teamA: Team;
   teamB: Team;
+  captains?: { aId?: number; bId?: number }; // nuevo, opcional
 }
 
 interface TeamsContextType {
