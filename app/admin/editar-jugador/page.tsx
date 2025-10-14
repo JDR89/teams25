@@ -1,10 +1,18 @@
-import React from 'react'
+import PlayersGrid from "@/components/editar-jugador/PlayersGrid";
+import { getAllPlayers } from "@/utils/player-actions/actions";
+import { Player } from "@/utils/teams";
 
-const EditarJugador = () => {
+export const revalidate = 0 
+
+const EditarJugador = async () => {
+
+  const players: Player[] = await getAllPlayers();
+
   return (
-    <div>
-      Editar jugador
-    </div>
+
+    <PlayersGrid players={players} />
+    
+  
   )
 }
 

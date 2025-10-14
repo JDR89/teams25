@@ -1,12 +1,31 @@
 import prisma from '@/lib/prisma'
+import type { Player } from '@/utils/teams'
 
-export const getAllPlayers = async () => {
-  const players = await prisma.jugadores.findMany({
-    orderBy: {
-      name: 'asc'
-    }
+export type SeleccionadoData = {
+  id: number;
+  name: string;
+  pos1: string;
+  pos2: string;
+  level: number;
+  isBot: boolean;
+}
+
+export const getAllPlayers = async (): Promise<Player[]> => {
+  const rows = await prisma.jugadores.findMany({
+    orderBy: { name: 'asc' }
   })
-  return players
+
+  const isPos = (pos: string): pos is Player['pos1'] =>
+    pos === 'del' || pos === 'med' || pos === 'def'
+
+  return rows.map(r => ({
+    id: r.id,
+    name: r.name,
+    pos1: isPos(r.pos1) ? r.pos1 : 'med',
+    pos2: isPos(r.pos2) ? r.pos2 : 'med',
+    level: r.level,
+    isBot: r.isBot ?? false,
+  }))
 }
 
 // Agregar action para obtener todos los bots
@@ -17,16 +36,6 @@ export const getAllBots = async () => {
     }
   })
   return bots
-}
-
-
-export type SeleccionadoData = {
-  id: number;
-  name: string;
-  pos1: string;
-  pos2: string;
-  level: number;
-  isBot: boolean;
 }
 
 // Action para guardar múltiples seleccionados
@@ -225,3 +234,115 @@ export const addPlayer = async (playerData: {
   }
 };
 
+
+export const getPlayerByID = async (id: number): Promise<Player | null> => {
+  try {
+    const r = await prisma.jugadores.findUnique({ where: { id } });
+    if (!r) return null;
+
+    const isPos = (pos: string): pos is Player['pos1'] => (
+      pos === 'del' || pos === 'med' || pos === 'def'
+    );
+
+    return {
+      id: r.id,
+      name: r.name,
+      pos1: isPos(r.pos1) ? r.pos1 : 'med',
+      pos2: isPos(r.pos2) ? r.pos2 : 'med',
+      level: r.level,
+      isBot: r.isBot ?? false,
+    };
+  } catch (error) {
+    console.error('Error al obtener jugador por ID:', error);
+    return null;
+  }
+}
+
+export const editPlayer = async (
+  id: number,
+  updates: { name?: string; pos1?: string; pos2?: string; level?: number }
+): Promise<{ success: true; data: Player; message: string } | { success: false; error: string; details?: unknown }> => {
+  try {
+    if (
+      !updates ||
+      (updates.name === undefined &&
+        updates.pos1 === undefined &&
+        updates.pos2 === undefined &&
+        updates.level === undefined)
+    ) {
+      return { success: false, error: 'No hay cambios para aplicar' };
+    }
+
+    if (updates.name !== undefined && !updates.name.trim()) {
+      return { success: false, error: 'El nombre no puede estar vacío' };
+    }
+
+    if (updates.level !== undefined && (updates.level < 80 || updates.level > 99)) {
+      return { success: false, error: 'El nivel debe estar entre 80 y 99' };
+    }
+
+    const isPos = (pos: string): pos is Player['pos1'] =>
+      pos === 'del' || pos === 'med' || pos === 'def';
+
+    if (updates.pos1 !== undefined && !isPos(updates.pos1)) {
+      return { success: false, error: 'pos1 inválida: use del, med o def' };
+    }
+    if (updates.pos2 !== undefined && !isPos(updates.pos2)) {
+      return { success: false, error: 'pos2 inválida: use del, med o def' };
+    }
+
+    if (updates.name) {
+      const existing = await prisma.jugadores.findFirst({
+        where: {
+          AND: [
+            { name: updates.name.trim() },
+            { NOT: { id: id } }
+          ]
+        }
+      });
+      if (existing) {
+        return { success: false, error: 'Ya existe otro jugador con ese nombre' };
+      }
+    }
+
+    const dataToUpdate: { name?: string; pos1?: string; pos2?: string; level?: number } = {};
+    if (updates.name !== undefined) dataToUpdate.name = updates.name.trim();
+    if (updates.pos1 !== undefined) dataToUpdate.pos1 = updates.pos1;
+    if (updates.pos2 !== undefined) dataToUpdate.pos2 = updates.pos2;
+    if (updates.level !== undefined) dataToUpdate.level = updates.level;
+
+    const updated = await prisma.jugadores.update({
+      where: { id },
+      data: dataToUpdate
+    });
+
+    const mapped: Player = {
+      id: updated.id,
+      name: updated.name,
+      pos1: isPos(updated.pos1) ? updated.pos1 : 'med',
+      pos2: isPos(updated.pos2) ? updated.pos2 : 'med',
+      level: updated.level,
+      isBot: updated.isBot ?? false
+    };
+
+    return { success: true, data: mapped, message: `Jugador ${mapped.name} actualizado` };
+  } catch (error) {
+    console.error('Error al editar jugador:', error);
+    return { success: false, error: 'Error al actualizar en la base de datos', details: error };
+  }
+}
+
+export const deletePlayer = async (id: number): Promise<{ success: true; message: string } | { success: false; error: string; details?: unknown }> => {
+  try {
+    const player = await prisma.jugadores.findUnique({ where: { id } });
+    if (!player) {
+      return { success: false, error: 'Jugador no encontrado' };
+    }
+
+    await prisma.jugadores.delete({ where: { id } });
+    return { success: true, message: `Jugador ${player.name} eliminado` };
+  } catch (error) {
+    console.error('Error al eliminar jugador:', error);
+    return { success: false, error: 'Error al eliminar en la base de datos', details: error };
+  }
+}
