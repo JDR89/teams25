@@ -13,6 +13,7 @@ type SelectedEntityData = {
 
 export const revalidate = 0;
 
+
 const SeleccionPage = async () => {
   
   
