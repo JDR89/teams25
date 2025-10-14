@@ -5,6 +5,7 @@ export type Player = {
   pos2: "del" | "med" | "def";
   level: number;
   isBot: boolean;
+  assignedRole?: "del" | "med" | "def";
 };
 
 export type Team = {
@@ -107,12 +108,13 @@ export function balanceTeams(players: Player[], opts?: { captainAId?: number; ca
   const assignedIds = new Set<number>();
 
   const addToTeam = (team: "A" | "B", p: Player, roleForCount: "def" | "med" | "del") => {
+    const enriched = { ...p, assignedRole: roleForCount };
     if (team === "A") {
-      teamA.push(p);
+      teamA.push(enriched);
       countsA[roleForCount] += 1;
       levelA += p.level;
     } else {
-      teamB.push(p);
+      teamB.push(enriched);
       countsB[roleForCount] += 1;
       levelB += p.level;
     }

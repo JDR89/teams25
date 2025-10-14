@@ -229,7 +229,8 @@ export default function ArmadoPage() {
                   >
                     <TableCell className="text-center">
                       <span className="inline-flex items-center justify-center w-8 h-8 bg-red-100 text-red-700 rounded text-xs font-bold">
-                        {player.pos1.toUpperCase()}
+                        {/* POS real si existe; si no, pos1 */}
+                        {(player.assignedRole ?? player.pos1).toUpperCase()}
                       </span>
                     </TableCell>
                     <TableCell className="font-medium text-gray-800">
