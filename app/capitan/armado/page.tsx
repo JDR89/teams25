@@ -61,33 +61,31 @@ export default function ArmadoPage() {
   const handleTransferPlayers = () => {
     if (!selectedPlayerA || !selectedPlayerB || !teamsData) return;
 
-    // Crear nuevos arrays sin los jugadores seleccionados
     const newTeamAPlayers = teamsData.teamA.players.filter(p => p.id !== selectedPlayerA.id);
     const newTeamBPlayers = teamsData.teamB.players.filter(p => p.id !== selectedPlayerB.id);
 
-    // Agregar los jugadores intercambiados
     newTeamAPlayers.push(selectedPlayerB);
     newTeamBPlayers.push(selectedPlayerA);
 
-    // Calcular nuevos totales
     const newTeamATotalLevel = newTeamAPlayers.reduce((sum, player) => sum + player.level, 0);
     const newTeamBTotalLevel = newTeamBPlayers.reduce((sum, player) => sum + player.level, 0);
 
-    // Actualizar los datos
+    // Mantener capitanes y cualquier otro metadata del context
     const newTeamsData = {
+      // conserva { captains, ... } y lo que exista
+      ...teamsData,
       teamA: {
         players: newTeamAPlayers,
-        totalLevel: newTeamATotalLevel
+        totalLevel: newTeamATotalLevel,
       },
       teamB: {
         players: newTeamBPlayers,
-        totalLevel: newTeamBTotalLevel
-      }
+        totalLevel: newTeamBTotalLevel,
+      },
     };
 
     setTeamsData(newTeamsData);
-    
-    // Limpiar selecciones
+
     setSelectedPlayerA(null);
     setSelectedPlayerB(null);
   };
@@ -169,9 +167,7 @@ export default function ArmadoPage() {
                     <TableCell className="font-medium text-gray-800">
                       {player.name}
                       {isCaptain(player.id) && (
-                        <span className="ml-1 align-middle text-[10px] font-semibold text-yellow-700 bg-yellow-100 rounded px-1.5 py-0.5">
-                          C
-                        </span>
+                        <Crown className="ml-1 inline text-yellow-600" size={14} />
                       )}
                     </TableCell>
                   </TableRow>
