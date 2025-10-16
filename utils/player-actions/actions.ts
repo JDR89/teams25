@@ -346,3 +346,188 @@ export const deletePlayer = async (id: number): Promise<{ success: true; message
     return { success: false, error: 'Error al eliminar en la base de datos', details: error };
   }
 }
+
+
+// Action para agregar un nuevo bot
+export const addBot = async (botData: {
+  name: string;
+  pos1: string;
+  pos2: string;
+  level: number;
+}) => {
+  try {
+    // Validaciones
+    if (!botData.name.trim()) {
+      return {
+        success: false,
+        error: 'El nombre es requerido'
+      };
+    }
+
+    if (botData.level < 80 || botData.level > 99) {
+      return {
+        success: false,
+        error: 'El nivel debe estar entre 80 y 100'
+      };
+    }
+
+    const validPositions = ['del', 'med', 'def'];
+    if (!validPositions.includes(botData.pos1) || !validPositions.includes(botData.pos2)) {
+      return {
+        success: false,
+        error: 'Las posiciones deben ser: del, med o def'
+      };
+    }
+
+    // Verificar si ya existe un bot con ese nombre
+    const existingBot = await prisma.bots.findFirst({
+      where: { name: botData.name.trim() }
+    });
+
+    if (existingBot) {
+      return {
+        success: false,
+        error: 'Ya existe un bot con ese nombre'
+      };
+    }
+
+    // Crear el bot
+    const newBot = await prisma.bots.create({
+      data: {
+        name: botData.name.trim(),
+        pos1: botData.pos1,
+        pos2: botData.pos2,
+        level: botData.level,
+        isBot: true
+      }
+    });
+
+    return {
+      success: true,
+      data: newBot,
+      message: `Bot ${newBot.name} agregado exitosamente`
+    };
+
+  } catch (error) {
+    console.error('Error al agregar bot:', error);
+    return {
+      success: false,
+      error: 'Error al guardar en la base de datos',
+      details: error
+    };
+  }
+};
+
+
+export const getBotByID = async (id: number) => {
+  try {
+    const r = await prisma.bots.findUnique({ where: { id } });
+    if (!r) return null;
+
+    const isPos = (pos: string): pos is Player['pos1'] =>
+      pos === 'del' || pos === 'med' || pos === 'def';
+
+    const mapped: Player = {
+      id: r.id,
+      name: r.name,
+      pos1: isPos(r.pos1) ? r.pos1 : 'med',
+      pos2: isPos(r.pos2) ? r.pos2 : 'med',
+      level: r.level,
+      isBot: r.isBot ?? true,
+    };
+
+    return mapped;
+  } catch (error) {
+    console.error('Error al obtener bot por ID:', error);
+    return null;
+  }
+}
+
+export const editBot = async (
+  id: number,
+  updates: { name?: string; pos1?: string; pos2?: string; level?: number }
+): Promise<{ success: true; data: Player; message: string } | { success: false; error: string; details?: unknown }> => {
+  try {
+    if (
+      !updates ||
+      (updates.name === undefined &&
+        updates.pos1 === undefined &&
+        updates.pos2 === undefined &&
+        updates.level === undefined)
+    ) {
+      return { success: false, error: 'No hay cambios para aplicar' };
+    }
+
+    if (updates.name !== undefined && !updates.name.trim()) {
+      return { success: false, error: 'El nombre no puede estar vacío' };
+    }
+
+    if (updates.level !== undefined && (updates.level < 80 || updates.level > 99)) {
+      return { success: false, error: 'El nivel debe estar entre 80 y 99' };
+    }
+
+    const isPos = (pos: string): pos is Player['pos1'] =>
+      pos === 'del' || pos === 'med' || pos === 'def';
+
+    if (updates.pos1 !== undefined && !isPos(updates.pos1)) {
+      return { success: false, error: 'pos1 inválida: use del, med o def' };
+    }
+    if (updates.pos2 !== undefined && !isPos(updates.pos2)) {
+      return { success: false, error: 'pos2 inválida: use del, med o def' };
+    }
+
+    if (updates.name) {
+      const existing = await prisma.bots.findFirst({
+        where: {
+          AND: [
+            { name: updates.name.trim() },
+            { NOT: { id } }
+          ]
+        }
+      });
+      if (existing) {
+        return { success: false, error: 'Ya existe otro bot con ese nombre' };
+      }
+    }
+
+    const dataToUpdate: { name?: string; pos1?: string; pos2?: string; level?: number } = {};
+    if (updates.name !== undefined) dataToUpdate.name = updates.name.trim();
+    if (updates.pos1 !== undefined) dataToUpdate.pos1 = updates.pos1;
+    if (updates.pos2 !== undefined) dataToUpdate.pos2 = updates.pos2;
+    if (updates.level !== undefined) dataToUpdate.level = updates.level;
+
+    const updated = await prisma.bots.update({
+      where: { id },
+      data: dataToUpdate
+    });
+
+    const mapped: Player = {
+      id: updated.id,
+      name: updated.name,
+      pos1: isPos(updated.pos1) ? updated.pos1 : 'med',
+      pos2: isPos(updated.pos2) ? updated.pos2 : 'med',
+      level: updated.level,
+      isBot: updated.isBot ?? true
+    };
+
+    return { success: true, data: mapped, message: `Bot ${mapped.name} actualizado` };
+  } catch (error) {
+    console.error('Error al editar bot:', error);
+    return { success: false, error: 'Error al actualizar en la base de datos', details: error };
+  }
+}
+
+export const deleteBot = async (id: number): Promise<{ success: true; message: string } | { success: false; error: string; details?: unknown }> => {
+  try {
+    const bot = await prisma.bots.findUnique({ where: { id } });
+    if (!bot) {
+      return { success: false, error: 'Bot no encontrado' };
+    }
+
+    await prisma.bots.delete({ where: { id } });
+    return { success: true, message: `Bot ${bot.name} eliminado` };
+  } catch (error) {
+    console.error('Error al eliminar bot:', error);
+    return { success: false, error: 'Error al eliminar en la base de datos', details: error };
+  }
+}
