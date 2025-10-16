@@ -34,11 +34,17 @@ export default function ArmadoPage() {
     );
   }
 
-  // Función para ordenar jugadores por posición
+  // Función para ordenar jugadores por posición (DEF → MED → DEL) usando assignedRole si existe
   const sortPlayersByPosition = (players: Player[]) => {
-    const positionOrder = { 'def': 1, 'med': 2, 'del': 3 };
-    return players.sort((a, b) => {
-      return positionOrder[a.pos1 as keyof typeof positionOrder] - positionOrder[b.pos1 as keyof typeof positionOrder];
+    const order = { def: 1, med: 2, del: 3 } as const;
+    const primary = (p: Player) => p.assignedRole ?? p.pos1;
+
+    return [...players].sort((a, b) => {
+      const byAssigned = order[primary(a)] - order[primary(b)];
+      if (byAssigned !== 0) return byAssigned;
+      const byPos1 = order[a.pos1] - order[b.pos1];
+      if (byPos1 !== 0) return byPos1;
+      return a.name.localeCompare(b.name);
     });
   };
 
@@ -160,8 +166,11 @@ export default function ArmadoPage() {
                     onClick={() => handleSelectPlayerA(player)}
                   >
                     <TableCell className="text-center">
-                      <span className="inline-flex items-center justify-center w-8 h-8 bg-blue-100 text-blue-700 rounded text-xs font-bold">
-                        {player.pos1.toUpperCase()}
+                      <span className="inline-flex items-center justify-center h-8 px-2 bg-blue-100 text-blue-700 rounded text-xs font-bold">
+                        {(player.assignedRole ?? player.pos1).toUpperCase()}
+                        <span className="ml-1 text-[10px] lowercase font-normal">
+                          /{(player.assignedRole ?? player.pos1) === player.pos1 ? player.pos2 : player.pos1}
+                        </span>
                       </span>
                     </TableCell>
                     <TableCell className="font-medium text-gray-800">
@@ -224,9 +233,11 @@ export default function ArmadoPage() {
                     onClick={() => handleSelectPlayerB(player)}
                   >
                     <TableCell className="text-center">
-                      <span className="inline-flex items-center justify-center w-8 h-8 bg-red-100 text-red-700 rounded text-xs font-bold">
-                        {/* POS real si existe; si no, pos1 */}
+                      <span className="inline-flex items-center justify-center h-8 px-2 bg-red-100 text-red-700 rounded text-xs font-bold">
                         {(player.assignedRole ?? player.pos1).toUpperCase()}
+                        <span className="ml-1 text-[10px] lowercase font-normal">
+                          /{(player.assignedRole ?? player.pos1) === player.pos1 ? player.pos2 : player.pos1}
+                        </span>
                       </span>
                     </TableCell>
                     <TableCell className="font-medium text-gray-800">
