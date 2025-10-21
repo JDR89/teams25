@@ -59,7 +59,8 @@ export function FormAuthAdmin({
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <div className="pb-18 flex flex-col items-center gap-2 text-center">
         <Image src="/pehuen.jpg" alt="logo" width={100} height={100} onClick={playLlanto} className="cursor-pointer" />
-        <p>no me gusta esto snif snif</p>
+        <p className="text-lg">no me gusta esto snif snif</p>
+        <strong className="">Click a la imagen</strong>
       </div>
       
       <Form {...form}>
