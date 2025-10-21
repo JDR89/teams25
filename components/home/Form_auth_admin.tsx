@@ -42,7 +42,8 @@ export function FormAuthAdmin({
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <div className="pb-18 flex flex-col items-center gap-2 text-center">
-        <Image src="/logoSJD.png" alt="logo" width={100} height={100} />
+        <Image src="/pehuen.jpg" alt="logo" width={100} height={100} />
+        <p>no me gusta esto snif snif</p>
       </div>
       
       <Form {...form}>
