@@ -89,19 +89,37 @@ export async function getAllSorteos(): Promise<ActionResponse> {
     });
 
     // Obtener los datos de los jugadores y crear el resultado final
-    const estadisticas = await Promise.all(
+    // Si un jugador no existe, eliminamos sus registros del historial de sorteos
+    const estadisticasRaw = await Promise.all(
       Array.from(conteoCapitanes.entries()).map(async ([jugadorId, cantidad]) => {
-        const jugador = await prisma.jugadores.findUnique({ 
-          where: { id: jugadorId } 
+        const jugador = await prisma.jugadores.findUnique({
+          where: { id: jugadorId }
         });
+
+        if (!jugador) {
+          // Eliminar todos los sorteos que referencian a este ID inexistente
+          await prisma.sorteos.deleteMany({
+            where: {
+              OR: [{ capitan1: jugadorId }, { capitan2: jugadorId }]
+            }
+          });
+          // No devolvemos estadística para este ID
+          return null;
+        }
 
         return {
           id: jugadorId,
-          name: jugador?.name || 'Jugador no encontrado',
+          name: jugador.name,
           vecesElegido: cantidad
         };
       })
     );
+
+    const estadisticas = (estadisticasRaw.filter(Boolean) as Array<{
+      id: number;
+      name: string;
+      vecesElegido: number;
+    }>);
 
     // Ordenar por cantidad de veces elegido (descendente)
     estadisticas.sort((a, b) => b.vecesElegido - a.vecesElegido);

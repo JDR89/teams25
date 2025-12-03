@@ -1,4 +1,4 @@
-// components/FormAuthAdmin.tsx
+
 "use client"
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -20,7 +20,7 @@ import Link from "next/link";
 import { formSchema } from "@/schemas/formSchema";
 import { useAuthAdmin } from "@/hooks/useAuthAdmin"; 
 import Image from "next/image";
-import { useEffect, useRef } from "react";
+
 
 export function FormAuthAdmin({
   className,
@@ -36,20 +36,7 @@ export function FormAuthAdmin({
     },
   });
 
-  // Pre-cargar y manejar el audio "llanto"
-  const llantoRef = useRef<HTMLAudioElement | null>(null);
-  useEffect(() => {
-    llantoRef.current = new Audio("/llanto.mp3");
-  }, []);
-
-  const playLlanto = () => {
-    const audio = llantoRef.current;
-    if (!audio) return;
-    audio.currentTime = 0;
-    audio.play().catch(() => {
-      // En algunos navegadores se necesita interacción del usuario (el click ya cumple)
-    });
-  };
+ 
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     await signIn(values.email, values.password); // Call the signIn function from the hook
@@ -58,9 +45,8 @@ export function FormAuthAdmin({
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <div className="pb-18 flex flex-col items-center gap-2 text-center">
-        <Image src="/pehuen.jpg" alt="logo" width={100} height={100} onClick={playLlanto} className="cursor-pointer" />
-        <p className="text-lg">no me gusta esto snif snif</p>
-        <strong className="">Click a la imagen</strong>
+        <Image src="/logoSJD.png" alt="logo" width={100} height={100} className="cursor-pointer" />
+
       </div>
       
       <Form {...form}>
